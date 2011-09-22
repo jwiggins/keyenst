@@ -5,33 +5,23 @@ try:
 except ImportError:
     from distutils.core import setup
 
-kwds = {} # Additional keyword arguments for setup
-
-d = {}
-execfile(convert_path('enstaller/__init__.py'), d)
-kwds['version'] = d['__version__']
-
-f = open('README.rst')
-kwds['long_description'] = f.read()
-f.close()
-
 
 setup(
-    name="enstaller",
+    name="Enstaller",
+    version="1.0.0",
     author="Enthought, Inc.",
     author_email="info@enthought.com",
     url = "https://github.com/enthought/enstaller",
     license="BSD",
     description = "Install and managing tool for egg-based packages",
+    py_modules = [
+        'patcher.py'
+    ],
     packages = [
         'egginst',
-        'enstaller',
-        'enstaller/indexed_repo',
-        'enstaller/proxy',
     ],
     entry_points = {
         "console_scripts": [
-             "enpkg = enstaller.main:main",
              "egginst = egginst.main:main",
         ],
     },
@@ -46,5 +36,4 @@ setup(
         "Topic :: System :: Software Distribution",
         "Topic :: System :: Systems Administration",
     ],
-    **kwds
 )
