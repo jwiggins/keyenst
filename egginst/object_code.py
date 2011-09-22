@@ -102,15 +102,10 @@ def fix_files(egg):
     """
     global _targets
 
-    prefixes = [sys.prefix]
-    if egg.prefix != sys.prefix:
-        prefixes.insert(0, egg.prefix)
-
-    _targets = []
-    for prefix in prefixes:
-        for line in egg.lines_from_arcname('EGG-INFO/inst/targets.dat'):
-            _targets.append(join(prefix, line))
-        _targets.append(join(prefix, 'lib'))
+    prefix = abspath(sys.prefix)
+    for line in egg.lines_from_arcname('EGG-INFO/inst/targets.dat'):
+        _targets.append(join(prefix, line))
+    _targets.append(join(prefix, 'lib'))
 
     if verbose:
         print 'Target directories:'
