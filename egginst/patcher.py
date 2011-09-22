@@ -1,6 +1,7 @@
 import sys
 from os.path import abspath, basename, exists, join
 
+from main import EggInst
 import scripts
 import object_code
 
@@ -26,6 +27,19 @@ def mk_relative(r):
     return ':'.join(res)
 
 object_code.alt_replace_func = mk_relative
+
+
+def insert_egg(egg_path):
+    """
+    inserts an egg into the application
+    """
+    print "Inserting:", egg_path
+    ei = EggInst(egg_path, prefix, verbose=True, noapp=True)
+    ei.install()
+
+
+def untar():
+    pass
 
 
 
