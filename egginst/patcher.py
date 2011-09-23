@@ -1,5 +1,7 @@
 import sys
-from os.path import abspath, basename, exists, join
+import tarfile
+import tempfile
+from os.path import abspath, exists, join
 
 from main import EggInst
 import scripts
@@ -9,6 +11,8 @@ if sys.platform == 'darwin':
     scripts.executable = '../MacOS/python'
 
 prefix = abspath(sys.prefix)
+
+tmp_dir = tempfile.mkdtemp()
 
 
 # Monkey patch egginst.object_code.alt_replace_func, which is an
@@ -38,14 +42,19 @@ def insert_egg(egg_path):
     ei.install()
 
 
-def untar():
-    pass
-
-
-
 def main():
-    pass
+    t = tarfile.open(sys.argv[1], 'r:*')
+    t.extractall(path=tmp_dir)
+    t.close()
 
+    platform_dir = join(tmp_dir, sys.platform)
+    for line in open(join(platform_dir, 'dists.txt')):
+        line = line.strip()
+        if not line or line.startswith('#'):
+            continue
+        insert_egg(join(platform_dir, line))
+
+    print 'Done.'
 
 
 if __name__ == '__main__':
