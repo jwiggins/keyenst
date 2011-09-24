@@ -15,7 +15,7 @@ setup(
     license="BSD",
     description = "Install and managing tool for egg-based packages",
     py_modules = [
-        'patcher.py'
+        'patcher'
     ],
     packages = [
         'egginst',
