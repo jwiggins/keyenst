@@ -1,7 +1,8 @@
+from contextlib import closing
+from os.path import abspath, exists, join
 import sys
 import tarfile
 import tempfile
-from os.path import abspath, exists, join
 
 from main import EggInst
 import scripts
@@ -40,6 +41,20 @@ def insert_egg(egg_path):
     print "Inserting:", egg_path
     ei = EggInst(egg_path, prefix, verbose=True, noapp=True)
     ei.install()
+
+def patch_is_valid(patch_path):
+    """
+    Check the file to see if it is a valid patch file.
+    """
+    try:
+        with closing(tarfile.open(patch_path, "r:*")) as tf:
+            # Check for the info.txt file
+            tinfo = tf.getmember('info.txt')
+    except:
+        # All exceptions imply an invalid patch file
+        return False
+    
+    return True
 
 
 def main():
