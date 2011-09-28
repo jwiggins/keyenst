@@ -1,5 +1,8 @@
+from __future__ import with_statement
+
 from contextlib import closing
 from os.path import abspath, exists, join
+import shutil
 import sys
 import tarfile
 import tempfile
@@ -12,9 +15,6 @@ if sys.platform == 'darwin':
     scripts.executable = '../MacOS/python'
 
 prefix = abspath(sys.prefix)
-
-tmp_dir = tempfile.mkdtemp()
-
 
 # Monkey patch egginst.object_code.alt_replace_func, which is an
 # optional function, which is applied to the replacement string.
@@ -58,16 +58,21 @@ def patch_is_valid(patch_path):
 
 
 def main():
+    tmp_dir = tempfile.mkdtemp()
+
     t = tarfile.open(sys.argv[1], 'r:*')
     t.extractall(path=tmp_dir)
     t.close()
 
     platform_dir = join(tmp_dir, sys.platform)
-    for line in open(join(platform_dir, 'dists.txt')):
-        line = line.strip()
-        if not line or line.startswith('#'):
-            continue
-        insert_egg(join(platform_dir, line))
+    with open(join(platform_dir, 'dists.txt')) as fp:
+        for line in fp:
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            insert_egg(join(platform_dir, line))
+
+    shutil.rmtree(tmp_dir, ignore_errors=True)
 
     print 'Done.'
 
