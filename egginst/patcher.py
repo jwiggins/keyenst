@@ -10,6 +10,7 @@ import tempfile
 from main import EggInst
 import scripts
 import object_code
+from patch_ui import PatcherApp
 
 if sys.platform == 'darwin':
     scripts.executable = '../MacOS/python'
@@ -38,7 +39,6 @@ def insert_egg(egg_path):
     """
     inserts an egg into the application
     """
-    print "Inserting:", egg_path
     ei = EggInst(egg_path, prefix, verbose=True, noapp=True)
     ei.install()
 
@@ -65,16 +65,21 @@ def main():
     t.close()
 
     platform_dir = join(tmp_dir, sys.platform)
+    patches = []
     with open(join(platform_dir, 'dists.txt')) as fp:
         for line in fp:
             line = line.strip()
             if not line or line.startswith('#'):
                 continue
-            insert_egg(join(platform_dir, line))
+            patches.append(join(platform_dir, line))
+    
+    # Start up a nice looking Qt GUI for feedback during the patching process
+    app = PatcherApp(patches=patches,
+                     patch_fn=insert_egg,
+                     translation_file=sys.argv[2])
+    app.exec_()
 
     shutil.rmtree(tmp_dir, ignore_errors=True)
-
-    print 'Done.'
 
 
 if __name__ == '__main__':
