@@ -14,10 +14,10 @@ import zipfile
 import ConfigParser
 from os.path import abspath, basename, dirname, join, isdir, isfile
 
-from utils import (on_win, bin_dir_name, rel_site_packages,
-                   pprint_fn_action, rm_empty_dir, rm_rf, human_bytes,
-                   console_file_progress)
-import scripts
+from egginst.utils import (on_win, bin_dir_name, rel_site_packages,
+                           pprint_fn_action, rm_empty_dir, rm_rf, human_bytes,
+                           console_file_progress)
+from egginst import scripts
 
 
 
@@ -85,8 +85,8 @@ class EggInst(object):
             scripts.create_proxies(self)
 
         else:
-            import links
-            import object_code
+            from egginst import links
+            from egginst import object_code
 
             if self.verbose:
                 links.verbose = object_code.verbose = True
@@ -102,7 +102,7 @@ class EggInst(object):
         self.write_meta()
 
         if self.hook:
-            import registry
+            from egginst import registry
 
             registry.create_file(self)
 

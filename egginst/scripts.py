@@ -26,9 +26,9 @@ def write_exe(dst, script_type='console_scripts'):
     fo.close()
     """
     if script_type == 'console_scripts':
-        from exe_data import cli as data
+        from egginst.exe_data import cli as data
     elif script_type == 'gui_scripts':
-        from exe_data import gui as data
+        from egginst.exe_data import gui as data
     else:
         raise Exception("Did not except script_type=%r" % script_type)
 

@@ -7,10 +7,10 @@ import sys
 import tarfile
 import tempfile
 
-from main import EggInst
-import scripts
-import object_code
-from patch_ui import PatcherApp
+from egginst.main import EggInst
+from egginst import scripts
+from egginst import object_code
+from egginst.patch_ui import PatcherApp
 
 if sys.platform == 'darwin':
     scripts.executable = '../MacOS/python'
