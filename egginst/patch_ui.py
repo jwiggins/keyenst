@@ -56,7 +56,7 @@ class StatusWidget(QtGui.QWidget):
     def customEvent(self, event):
         if event.type() == _InsertEggEvent.EVENT_TYPE:
             # Note the egg that is being installed
-            status = unicode(tr("StatusWidget", "Installing: %1").arg(basename(event.path())))
+            status = unicode(tr("UpdateStatusWidget", "Installing: %1").arg(basename(event.path())))
             self.form.status_message.setText(status)
             self.form.progress_bar.setValue(event.percentage())
             event.accept()
