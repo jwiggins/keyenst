@@ -1,9 +1,12 @@
-import sys
 import os
+import random
 import shutil
-from os.path import isdir, isfile, islink
+import string
+import sys
+from os.path import basename, isdir, isfile, islink, join
 
 
+chars = string.letters + string.digits
 on_win = bool(sys.platform == 'win32')
 
 if on_win:
@@ -13,6 +16,16 @@ else:
     bin_dir_name = 'bin'
     rel_site_packages = 'lib/python%i.%i/site-packages' % sys.version_info[:2]
 
+
+def mk_tmp_dir():
+    tmp_dir = join(sys.prefix, '.tmp_inst')
+    try:
+        shutil.rmtree(tmp_dir)
+    except (WindowsError, IOError):
+        pass
+    if not isdir(tmp_dir):
+        os.mkdir(tmp_dir)
+    return tmp_dir
 
 def console_file_progress(so_far, total, state={}):
     """
@@ -68,11 +81,13 @@ def rm_rf(path, verbose=False):
     elif isfile(path):
         if verbose:
             print "Removing: %r (file)" % path
-        if sys.platform == 'win32':
+        if on_win:
             try:
                 os.unlink(path)
-            except WindowsError:
-                pass
+            except (WindowsError, IOError):
+                tmp_dir = mk_tmp_dir()
+                rand = "".join(random.choice(chars) for x in xrange(10))
+                os.rename(path, join(tmp_dir, '%s_%s' % (rand, basename(path))))
         else:
             os.unlink(path)
 
